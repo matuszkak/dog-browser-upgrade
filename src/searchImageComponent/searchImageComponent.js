@@ -37,8 +37,6 @@ class SearchImage extends ContentComponent {
 
   // ez a metódus megjelenít egy képet (véletlenszerűen)
   displayImage(data) {
-    this.clearContent();
-    this.clearErrors();
     const image = document.createElement('img');
     image.src = data.message[Math.floor(Math.random() * data.message.length)];
     document.querySelector('#content').appendChild(image);
@@ -51,6 +49,7 @@ class SearchImage extends ContentComponent {
   <form class="dog-search">
     <span class="search-icon"></span>
     <input type="text" id="dogSearchInput">
+    <input type="text" id="imageNumberInput" placeholder="1">
     <button>Search</button>
   </form>
 `;
@@ -61,18 +60,26 @@ class SearchImage extends ContentComponent {
       event.preventDefault();
       // console.log(this);
       // console.log(event);
-      const searchTerm = document.querySelector('#dogSearchInput').value;
-      // mivel getImages egy async method ezért ez is promisse-sal tér vissza
-      // emiatt a promise objecten amit a getImages visszaad elérhető a .then() metódus 
-      // ennek bemeneti paramétere egy callback function ami akkor fut le
-      // a promise beteljesül (akkor jön létre a data amit visszaad a getImages metódus)
-      // ha egy paraméter van az arrow functionben akkor elhagyható a zárójel
-      this.getImages(searchTerm).then(result => {
-        // ha csak egy dolgot kell csinálni az if blockban akkor a {} kódblokk elhagyható és egy sorba írható
-        if (result) this.displayImage(result);
-      });
+      let count = Math.floor(parseInt(document.querySelector('#imageNumberInput').value));
+      console.log(count);
+      if (isNaN(count) || count < 1) {
+        count = 1;
+      }
+      this.clearContent();
+      this.clearErrors();
+      for (let i = 1; i <= count; i++) {
+        const searchTerm = document.querySelector('#dogSearchInput').value;
+        // mivel getImages egy async method ezért ez is promisse-sal tér vissza
+        // emiatt a promise objecten amit a getImages visszaad elérhető a .then() metódus 
+        // ennek bemeneti paramétere egy callback function ami akkor fut le
+        // a promise beteljesül (akkor jön létre a data amit visszaad a getImages metódus)
+        // ha egy paraméter van az arrow functionben akkor elhagyható a zárójel
+        this.getImages(searchTerm).then(result => {
+          // ha csak egy dolgot kell csinálni az if blockban akkor a {} kódblokk elhagyható és egy sorba írható
+          if (result) this.displayImage(result);
+        });
+      }
     });
-
   }
 }
 
