@@ -23,10 +23,11 @@ class SearchImage extends ContentComponent {
     dogbreed = dogbreed.split(' ');
     // szétvágja a sztringet ha alítousra is keresünk, mostmár tömb lesz
     if (dogbreed.length === 1) {
-      urlString = `https://dog.ceo/api/breed/${dogbreed[0]}/images`;
+      urlString = `https://dog.ceo/api/breed/${dogbreed[0].toLowerCase()}/images`;
     } else if (dogbreed.length === 2) {
-      urlString = `https://dog.ceo/api/breed/${dogbreed[1]}/${dogbreed[0]}/images`;
+      urlString = `https://dog.ceo/api/breed/${dogbreed[1].toLowerCase()}/${dogbreed[0].toLowerCase()}/images`;
     }
+    // console.log(urlString);
     const response = await fetch(urlString);
     const data = await response.json();
 
