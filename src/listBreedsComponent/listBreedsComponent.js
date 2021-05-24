@@ -7,17 +7,38 @@ class ListBreeds extends ContentComponent {
   constructor() {
     super();
     this.render();
+    // localStorage törlés browser frissítéskor
+    localStorage.clear();
   }
 
   async getFullList() {
-    const response = await fetch('https://dog.ceo/api/breeds/list/all');
-    //  ha az url nem elérhető akkor hibajelzét ad
-    if (response.status === 404) {
-      this.displayError('Page not found!');
-      return;
+    // console.log(localStorage.getItem('infiniteScrollEnabled'));
+
+    // ha a localStorage nincs feltöltve - infiniteScrollEnabled nincs megkeletkeztetve - akkor letöltjük a listát
+    if (localStorage.getItem('infiniteScrollEnabled') === null) {
+      const response = await fetch('https://dog.ceo/api/breeds/list/all');
+
+      if (response.status === 404) {
+        this.displayError('Page not found!');
+        return;
+      }
+
+      const data = await response.json();
+
+      // bele is tesszük a letöltött listát a localStorage-ba, stringként
+      localStorage.setItem('dogs', JSON.stringify(data));
+      // console.log('betöltve');
+      // és beállítjuk az infiniteScrollEnabled jelző értékét is
+      localStorage.setItem('infiniteScrollEnabled', 'true');
+      // console.log(localStorage);
+      return data;
+
+      // ha már volt letöltés, akkor csak kiszedjük az adatokat a localStorage-ból és azt return-öljük
+    } else {
+      const dogs = JSON.parse(localStorage.getItem('dogs'));
+      // console.log('visszatöltve');
+      return dogs;
     }
-    const data = await response.json();
-    return data;
   }
 
   createListItem(title) {
