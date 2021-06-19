@@ -11,6 +11,10 @@ class ListBreeds extends ContentComponent {
     localStorage.clear();
   }
 
+  // gets full list of breeds-subbreeds
+  // basic error handling for network errors
+  // list loaded to localStorage at first download to increase performance
+
   async getFullList() {
     // console.log(localStorage.getItem('infiniteScrollEnabled'));
 
@@ -41,13 +45,25 @@ class ListBreeds extends ContentComponent {
     }
   }
 
+  // creates list item for a dog breed-subbreed on screen
+  // activates even listener for clicking
+  // cares for displaying result on UI
   createListItem(title) {
     const item = document.createElement('div');
     item.classList.add('breed-list-item');
     item.innerHTML = title;
+    item.addEventListener('click', () => {
+      // console.log(title);
+      // sets search term based on item clicked
+      this.setSearchTerm(title);
+      // display pic
+      this.handleContentDisplay(title);
+    });
     document.querySelector('#content').appendChild(item);
   }
 
+  // puts together full list of dog breeds-subbreeds
+  // cares for displaying them on UI by element
   displayList(results) {
     // a result.message egy object amin végigmegyünk key-value páronként
     for (let breed in results.message) {
@@ -65,6 +81,8 @@ class ListBreeds extends ContentComponent {
     }
   }
 
+  // prepares screen and activates listBreed button
+  // once clicked cares for displaying full range of dogbreeds and subbreeds
   render() {
     const button = document.createElement('button');
     button.classList.add('list-button');
