@@ -1,5 +1,7 @@
 import '../css/searchImageComponent.css';
 import ContentComponent from '../contentComponent/contentComponent.js';
+import yall from 'yall-js';
+import preloading from '../img/preloading.gif';
 
 class SearchImage extends ContentComponent {
 
@@ -38,10 +40,23 @@ class SearchImage extends ContentComponent {
   // ez a metódus megjelenít egy képet (véletlenszerűen)
   displayImage(data) {
     const image = document.createElement('img');
-    image.src = data.message[Math.floor(Math.random() * data.message.length)];
+    // eslint-disable-next-line quotes
+    image.classList.add('lazy');
+    image.src = preloading;
+    image.dataset.src = data.message[Math.floor(Math.random() * data.message.length)];
     document.querySelector('#content').appendChild(image);
     // console.log(data);
+    yall({
+      events: {
+        load: event => {
+          if (event.target.nodeName == 'IMG' && !event.target.classList.contains('lazy')) {
+            event.target.classList.add('yall-loaded');
+          }
+        }
+      }
+    });
   }
+
 
   render() {
     //megjelíníti a keresőt
